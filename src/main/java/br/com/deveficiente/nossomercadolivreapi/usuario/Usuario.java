@@ -3,7 +3,7 @@ package br.com.deveficiente.nossomercadolivreapi.usuario;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 
 @Entity
 @Table(name = "usuario")

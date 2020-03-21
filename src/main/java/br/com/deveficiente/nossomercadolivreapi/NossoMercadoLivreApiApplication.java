@@ -11,8 +11,4 @@ public class NossoMercadoLivreApiApplication {
 		SpringApplication.run(NossoMercadoLivreApiApplication.class, args);
 	}
 
-	/**
-	 * Alberto estou me familiarizando com este fluxo... sai fazendo o projeto e só depois que fui mandar pro github.
-	 *
-	 */
 }
