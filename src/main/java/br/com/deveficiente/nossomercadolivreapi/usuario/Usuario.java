@@ -15,6 +15,7 @@ public class Usuario {
 
     @NotEmpty
     @Email
+    @Column(unique = true)
     private String login;
 
     @Size(min = 6)
