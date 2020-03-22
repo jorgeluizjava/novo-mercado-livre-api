@@ -17,15 +17,11 @@ public class UsuariosController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @PostMapping
-    public ResponseEntity<Void> cria(@RequestBody @Valid  UsuarioRequest usuarioRequest) {
+    public void cria(@RequestBody @Valid  UsuarioRequest usuarioRequest) {
 
-        Usuario novoUsuario = usuarioRequest.criaUsuario(passwordEncoder);
+        Usuario novoUsuario = usuarioRequest.criaUsuario();
         usuarioRepository.save(novoUsuario);
-
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

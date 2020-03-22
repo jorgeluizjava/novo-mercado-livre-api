@@ -1,10 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.usuario;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -20,7 +17,7 @@ public class Usuario {
     @Email
     private String login;
 
-    @Size(min = 6, message = "A senha deve conter no mínimo 6 caracteres")
+    @Size(min = 6)
     private String senha;
 
     @PastOrPresent
@@ -30,9 +27,19 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(@NotEmpty @Email String login, @Size(min = 6) String senha) {
+    /**
+     *
+     * @param login
+     * @param bCryptPassword
+     */
+    public Usuario(@NotEmpty @Email String login, @NotNull BCryptPassword bCryptPassword) {
+
+        if (bCryptPassword == null) {
+            throw new IllegalArgumentException("BCryptPassword não informado.");
+        }
+
         this.login = login;
-        this.senha = senha;
+        this.senha = bCryptPassword.getPassword();
     }
 
     public String getSenha() {

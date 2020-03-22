@@ -1,6 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.usuario;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.Email;
@@ -40,7 +41,7 @@ public class UsuarioRequest {
                 '}';
     }
 
-    public Usuario criaUsuario(PasswordEncoder passwordEncoder) {
-        return new Usuario(login, passwordEncoder.encode(senha));
+    public Usuario criaUsuario() {
+        return new Usuario(login, new BCryptPassword(senha));
     }
 }
