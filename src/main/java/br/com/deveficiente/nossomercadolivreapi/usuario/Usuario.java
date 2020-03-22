@@ -5,7 +5,7 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 
 @Entity
 @Table(name = "usuario")
@@ -17,6 +17,7 @@ public class Usuario {
 
     @NotEmpty
     @Email
+    @Column(unique = true)
     private String login;
 
     @Size(min = 6)
