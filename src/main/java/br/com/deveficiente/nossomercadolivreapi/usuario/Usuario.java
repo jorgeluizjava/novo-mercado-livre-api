@@ -1,9 +1,6 @@
 package br.com.deveficiente.nossomercadolivreapi.usuario;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PastOrPresent;
@@ -12,13 +9,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Table(name = "usuario")
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID usuarioId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long usuarioId;
 
-    @NotEmpty(message = "Login não informado.")
+    @NotEmpty
     @Email
     private String login;
 
