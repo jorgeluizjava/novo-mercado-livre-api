@@ -1,5 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.usuario;
 
+import org.springframework.util.Assert;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -35,9 +37,7 @@ public class Usuario {
      */
     public Usuario(@NotEmpty @Email String login, @NotNull BCryptPassword bCryptPassword) {
 
-        if (bCryptPassword == null) {
-            throw new IllegalArgumentException("BCryptPassword não informado.");
-        }
+        Assert.notNull(bCryptPassword, "BCryptPassword não informado.");
 
         this.login = login;
         this.senha = bCryptPassword.getPassword();
