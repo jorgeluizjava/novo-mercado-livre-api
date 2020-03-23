@@ -21,7 +21,7 @@ public class VerificaSeCategoriaSuperiorExisteValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         CategoriaRequest categoriaRequest = (CategoriaRequest) o;
-        if (categoriaRequest.getCategoriaSuperiorId() == 0) {
+        if (categoriaRequest.getCategoriaSuperiorId() == null || categoriaRequest.getCategoriaSuperiorId() <= 0) {
             return;
         }
         Optional<Categoria> optionalCategoria = categoriaRepository.findById(categoriaRequest.getCategoriaSuperiorId());

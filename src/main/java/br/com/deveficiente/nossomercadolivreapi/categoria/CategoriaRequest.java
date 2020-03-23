@@ -1,7 +1,5 @@
 package br.com.deveficiente.nossomercadolivreapi.categoria;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.Optional;
 
@@ -10,8 +8,7 @@ public class CategoriaRequest {
     @NotEmpty(message = "Nome não informado.")
     private String nome;
 
-    @Min(value = 0, message = "Valor deve ser maior ou igual a zero")
-    private long categoriaSuperiorId;
+    private Long categoriaSuperiorId;
 
     public String getNome() {
         return nome;
@@ -21,11 +18,11 @@ public class CategoriaRequest {
         this.nome = nome;
     }
 
-    public long getCategoriaSuperiorId() {
+    public Long getCategoriaSuperiorId() {
         return categoriaSuperiorId;
     }
 
-    public void setCategoriaSuperiorId(long categoriaSuperiorId) {
+    public void setCategoriaSuperiorId(Long categoriaSuperiorId) {
         this.categoriaSuperiorId = categoriaSuperiorId;
     }
 
@@ -38,7 +35,22 @@ public class CategoriaRequest {
     }
 
     public Categoria criaCategoria(CategoriaRepository categoriaRepository) {
+
+        if (categoriaSuperiorId == null || categoriaSuperiorId <= 0) {
+            return new Categoria(nome, Optional.empty());
+        }
+
         Optional<Categoria> optionalCategoria = categoriaRepository.findById(categoriaSuperiorId);
+        verificaSeExisteCategoriaSuperior(optionalCategoria);
+
         return new Categoria(nome, optionalCategoria);
+    }
+
+    private void verificaSeExisteCategoriaSuperior(Optional<Categoria> optionalCategoria) {
+        if (categoriaSuperiorId != null && categoriaSuperiorId > 0) {
+            if (!optionalCategoria.isPresent()) {
+                throw new IllegalArgumentException("Categoria superior ID: " + categoriaSuperiorId + " não encontrada.");
+            }
+        }
     }
 }
