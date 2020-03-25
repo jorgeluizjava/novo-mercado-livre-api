@@ -1,5 +1,6 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
+import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
 
@@ -32,6 +33,10 @@ public class Produto {
     @Column(length = 1000)
     private String descricao;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Foto> fotos = new ArrayList<>();
 
@@ -42,22 +47,25 @@ public class Produto {
     public Produto() {
     }
 
-    public Produto(@NotEmpty String nome,
+    public Produto(Usuario usuario, @NotEmpty String nome,
                    @Min(value = 1) BigDecimal valor,
                    @Min(value = 0) int quantidade,
                    @NotEmpty @Length(max = 1000) String descricao,
                    @NotEmpty @Min(value = 1) List<Foto> fotosDoProduto,
                    @NotEmpty @Min(value = 1) List<Caracteristica> caracteristicasProduto) {
 
-        this.nome = nome;
-        this.valor = valor;
-        this.quantidade = quantidade;
-        this.descricao = descricao;
+        Assert.notNull(usuario, "Usuário não informado.");
 
         Assert.notEmpty(fotosDoProduto, "Nenhuma foto foi informada para o produto: " + nome);
         Assert.notEmpty(caracteristicasProduto, "Nenhuma caracteristica foi informada para o produto: " + nome);
 
         Assert.isTrue(caracteristicasProduto.size() >= 3, "Pelo menos três caracteristicas devem ser informadas.");
+
+        this.nome = nome;
+        this.valor = valor;
+        this.quantidade = quantidade;
+        this.descricao = descricao;
+        this.usuario = usuario;
 
         for (Foto foto : fotosDoProduto) {
             foto.setProduto(this);
