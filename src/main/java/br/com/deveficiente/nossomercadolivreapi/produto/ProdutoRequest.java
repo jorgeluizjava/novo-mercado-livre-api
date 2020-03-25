@@ -1,6 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.shared.infra.Uploader;
+import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,13 +83,13 @@ public class ProdutoRequest {
     }
 
 
-    public Produto criaProduto(UsuarioRepository usuarioRepository, Uploader uploader) {
+    public Produto criaProduto(Usuario usuario, UsuarioRepository usuarioRepository, Uploader uploader) {
 
         List<String> urlsFotos = uploader.upload(fotos);
         List<Foto> fotosDoProduto = criaFotos(urlsFotos);
         List<Caracteristica> caracteristicasDoProduto = criaCaracteristicas();
 
-        return new Produto(nome, valor, quantidade, descricao, fotosDoProduto, caracteristicasDoProduto);
+        return new Produto(usuario, nome, valor, quantidade, descricao, fotosDoProduto, caracteristicasDoProduto);
     }
 
     private List<Foto> criaFotos(List<String> urlsFotos) {

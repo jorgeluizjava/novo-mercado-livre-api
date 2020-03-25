@@ -26,18 +26,23 @@ public class ProdutosController {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    @InitBinder(value = {"produtoRequest"})
-    public void init(WebDataBinder dataBinder) {
-
-    }
-
     @PostMapping
     public void cria(@Valid ProdutoRequest produtoRequest) {
 
         String email = "usuario@email.com.br";
         Usuario usuario = usuarioRepository.findByLogin(email).get();
 
-        Produto produto = produtoRequest.criaProduto(usuarioRepository, uploader);
+        verificaSeUsuarioJaTemProdutoCadastrado(usuario);
+
+        Produto produto = produtoRequest.criaProduto(usuario, usuarioRepository, uploader);
         produtoRepository.save(produto);
+
+    }
+
+    private void verificaSeUsuarioJaTemProdutoCadastrado(Usuario usuario) {
+        long quantidade = produtoRepository.countByUsuario(usuario);
+        if (quantidade > 0) {
+            throw new IllegalArgumentException("Cliente já tem um produto cadastrado.");
+        }
     }
 }
