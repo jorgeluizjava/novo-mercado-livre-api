@@ -24,7 +24,5 @@ public class CategoriaController {
 
         Categoria novaCategoria = categoriaRequest.criaCategoria(categoriaRepository);
         categoriaRepository.save(novaCategoria);
-
-        System.out.println(novaCategoria);
     }
 }
