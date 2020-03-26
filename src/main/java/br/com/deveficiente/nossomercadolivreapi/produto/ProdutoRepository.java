@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProdutoRepository extends CrudRepository<Produto, Long> {
 
-    public long countByUsuario(Usuario usuario);
-
 }

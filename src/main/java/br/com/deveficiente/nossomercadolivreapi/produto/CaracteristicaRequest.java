@@ -18,7 +18,7 @@ public class CaracteristicaRequest {
         this.descricao = descricao;
     }
 
-    public Caracteristica criaCaracteristica() {
-        return new Caracteristica(nome, descricao);
+    public Caracteristica criaCaracteristica(Produto produto) {
+        return new Caracteristica(nome, descricao, produto);
     }
 }
