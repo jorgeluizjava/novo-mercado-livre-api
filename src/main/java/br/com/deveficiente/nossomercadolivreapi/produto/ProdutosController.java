@@ -1,5 +1,6 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
+import br.com.deveficiente.nossomercadolivreapi.categoria.CategoriaRepository;
 import br.com.deveficiente.nossomercadolivreapi.shared.infra.Uploader;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
@@ -21,10 +22,18 @@ public class ProdutosController {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    private CategoriaRepository categoriaRepository;
+
+    @Autowired
     private Uploader uploader;
 
     @Autowired
     private ProdutoRepository produtoRepository;
+
+    @InitBinder(value = {"produtoRequest"})
+    public void init(WebDataBinder dataBinder) {
+        dataBinder.addValidators(new VerificaSeCategoriaExisteValidator(categoriaRepository));
+    }
 
     @PostMapping
     public void cria(@Valid ProdutoRequest produtoRequest) {
@@ -32,17 +41,8 @@ public class ProdutosController {
         String email = "usuario@email.com.br";
         Usuario usuario = usuarioRepository.findByLogin(email).get();
 
-        verificaSeUsuarioJaTemProdutoCadastrado(usuario);
-
-        Produto produto = produtoRequest.criaProduto(usuario, usuarioRepository, uploader);
+        Produto produto = produtoRequest.criaProduto(usuario, categoriaRepository, uploader);
         produtoRepository.save(produto);
-
     }
 
-    private void verificaSeUsuarioJaTemProdutoCadastrado(Usuario usuario) {
-        long quantidade = produtoRepository.countByUsuario(usuario);
-        if (quantidade > 0) {
-            throw new IllegalArgumentException("Cliente já tem um produto cadastrado.");
-        }
-    }
 }

@@ -2,6 +2,7 @@ package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "produto_caracteristica")
@@ -17,6 +18,7 @@ public class Caracteristica {
     @NotEmpty
     private String descricao;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id")
     private Produto produto;
@@ -25,12 +27,10 @@ public class Caracteristica {
     public Caracteristica() {
     }
 
-    public Caracteristica(@NotEmpty String nome, @NotEmpty String descricao) {
+    public Caracteristica(@NotEmpty String nome, @NotEmpty String descricao, @NotNull Produto produto) {
         this.nome = nome;
         this.descricao = descricao;
-    }
-
-    public void setProduto(Produto produto) {
         this.produto = produto;
     }
+
 }

@@ -1,5 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
+import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
+import br.com.deveficiente.nossomercadolivreapi.categoria.CategoriaRepository;
 import br.com.deveficiente.nossomercadolivreapi.shared.infra.Uploader;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
@@ -11,8 +13,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ProdutoRequest {
+
+    @NotNull(message = "A Categoria é obrigatória")
+    @Min(value = 1, message = "O categoriaId deve ser maior do que zero.")
+    private Long categoriaId;
 
     @NotEmpty(message = "O produto deve possuir pelo menos uma foto.")
     private List<MultipartFile> fotos;
@@ -33,6 +40,8 @@ public class ProdutoRequest {
     @NotEmpty(message = "A descrição é obrigatória")
     @Length(max = 1000)
     private String descricao;
+
+
 
     public List<MultipartFile> getFotos() {
         return fotos;
@@ -82,37 +91,24 @@ public class ProdutoRequest {
         this.descricao = descricao;
     }
 
+    public Long getCategoriaId() {
+        return categoriaId;
+    }
 
-    public Produto criaProduto(Usuario usuario, UsuarioRepository usuarioRepository, Uploader uploader) {
+    public void setCategoriaId(Long categoriaId) {
+        this.categoriaId = categoriaId;
+    }
 
+    public Produto criaProduto(Usuario usuario, CategoriaRepository categoriaRepository, Uploader uploader) {
+
+        Optional<Categoria> optionalCategoria = categoriaRepository.findById(categoriaId);
+        if (!optionalCategoria.isPresent()) {
+            throw new IllegalArgumentException("categoriaId: " + categoriaId + " não encontrada.");
+        }
+
+        Categoria categoria = optionalCategoria.get();
         List<String> urlsFotos = uploader.upload(fotos);
-        List<Foto> fotosDoProduto = criaFotos(urlsFotos);
-        List<Caracteristica> caracteristicasDoProduto = criaCaracteristicas();
-
-        return new Produto(usuario, nome, valor, quantidade, descricao, fotosDoProduto, caracteristicasDoProduto);
+        return new Produto(usuario, categoria, nome, valor, quantidade, descricao, urlsFotos, caracteristicas);
     }
 
-    private List<Foto> criaFotos(List<String> urlsFotos) {
-
-        List<Foto> fotosProduto = new ArrayList<>();
-
-        for (String url : urlsFotos) {
-            Foto foto = new Foto(url);
-            fotosProduto.add(foto);
-        }
-
-        return fotosProduto;
-    }
-
-    private List<Caracteristica> criaCaracteristicas() {
-
-        List<Caracteristica> categoriasProduto = new ArrayList<>();
-
-        for (CaracteristicaRequest caracteristicaRequest : caracteristicas) {
-            Caracteristica caracteristica = caracteristicaRequest.criaCaracteristica();
-            categoriasProduto.add(caracteristica);
-        }
-
-        return categoriasProduto;
-    }
 }
