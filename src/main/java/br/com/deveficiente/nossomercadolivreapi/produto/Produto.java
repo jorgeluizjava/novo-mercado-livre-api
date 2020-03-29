@@ -81,6 +81,10 @@ public class Produto {
         criaCaracteristicas(caracteristicasProduto);
     }
 
+    public Long getProdutoId() {
+        return produtoId;
+    }
+
     private void criaFotos(List<String> urlsFotos) {
         for (String url : urlsFotos) {
             Foto foto = new Foto(url, this);

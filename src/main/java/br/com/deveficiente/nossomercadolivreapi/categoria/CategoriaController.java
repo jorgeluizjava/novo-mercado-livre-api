@@ -21,7 +21,6 @@ public class CategoriaController {
 
     @PostMapping
     public void cria(@RequestBody @Valid CategoriaRequest categoriaRequest) {
-
         Categoria novaCategoria = categoriaRequest.criaCategoria(categoriaRepository);
         categoriaRepository.save(novaCategoria);
     }
