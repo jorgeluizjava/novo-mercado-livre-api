@@ -2,6 +2,7 @@ package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
 import br.com.deveficiente.nossomercadolivreapi.categoria.CategoriaRepository;
+import br.com.deveficiente.nossomercadolivreapi.shared.FindById;
 import br.com.deveficiente.nossomercadolivreapi.shared.infra.Uploader;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
@@ -101,7 +102,7 @@ public class ProdutoRequest {
 
     public Produto criaProduto(Usuario usuario, CategoriaRepository categoriaRepository, Uploader uploader) {
 
-        Optional<Categoria> optionalCategoria = categoriaRepository.findById(categoriaId);
+        Optional<Categoria> optionalCategoria = FindById.executa(categoriaId, categoriaRepository);
         if (!optionalCategoria.isPresent()) {
             throw new IllegalArgumentException("categoriaId: " + categoriaId + " não encontrada.");
         }

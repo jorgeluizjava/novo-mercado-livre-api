@@ -22,7 +22,7 @@ public class Categoria {
     private Categoria categoriaSuperior;
 
     @Deprecated
-    public Categoria() {
+    private Categoria() {
     }
 
     /**
@@ -32,7 +32,7 @@ public class Categoria {
      */
     public Categoria(@NotEmpty String nome, Optional<Categoria> categoriaSuperior) {
         this.nome = nome;
-        if (categoriaSuperior.isPresent()) {
+        if (categoriaSuperior != null && categoriaSuperior.isPresent()) {
             this.categoriaSuperior = categoriaSuperior.get();
         }
     }

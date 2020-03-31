@@ -63,18 +63,6 @@ public class ProdutoOpiniaoRequest {
         Assert.notNull(produto, "Produto não informado.");
         Assert.notNull(usuarioLogado, "Usuário não informado.");
 
-        Optional<Usuario> optionalUsuario = usuarioRepository.findById(usuarioLogado.getUsuarioId());
-        verificaSeExisteEntidade(optionalUsuario.isPresent(), "usuarioId: ", usuarioLogado.getUsuarioId());
-
-        Optional<Produto> optionalProduto = produtoRepository.findById(produto.getProdutoId());
-        verificaSeExisteEntidade(optionalProduto.isPresent(), "produtoId: ", produto.getProdutoId());
-
         return new ProdutoOpiniao(nota, tituloOpiniao, descricao, produto, usuarioLogado);
-    }
-
-    private void verificaSeExisteEntidade(boolean present, String s, Long entitdadeId) {
-        if (!present) {
-            throw new IllegalArgumentException(s + entitdadeId + " não encontrado.");
-        }
     }
 }

@@ -2,6 +2,7 @@ package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
 import br.com.deveficiente.nossomercadolivreapi.categoria.CategoriaRepository;
+import br.com.deveficiente.nossomercadolivreapi.shared.FindById;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -27,7 +28,7 @@ public class VerificaSeCategoriaExisteValidator implements Validator {
             return;
         }
 
-        Optional<Categoria> optionalCategoria = categoriaRepository.findById(produtoRequest.getCategoriaId());
+        Optional<Categoria> optionalCategoria = FindById.executa(produtoRequest.getCategoriaId(), categoriaRepository);
         if (!optionalCategoria.isPresent()) {
             errors.rejectValue("categoriaId", null, "Não foi encontrada categoria para o categoriaId: " + produtoRequest.getCategoriaId());
         }

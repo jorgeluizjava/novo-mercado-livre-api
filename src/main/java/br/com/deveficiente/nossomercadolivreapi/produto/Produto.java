@@ -50,7 +50,7 @@ public class Produto {
     private List<Caracteristica> caracteristicas = new ArrayList<>();
 
     @Deprecated
-    public Produto() {
+    private Produto() {
     }
 
     public Produto(@NotNull Usuario usuario,

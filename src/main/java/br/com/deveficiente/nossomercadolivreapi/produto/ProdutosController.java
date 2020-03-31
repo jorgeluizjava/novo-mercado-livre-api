@@ -1,26 +1,17 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
+import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
 import br.com.deveficiente.nossomercadolivreapi.categoria.CategoriaRepository;
+import br.com.deveficiente.nossomercadolivreapi.shared.FindById;
 import br.com.deveficiente.nossomercadolivreapi.shared.infra.Uploader;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
-import org.reflections.Reflections;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityExistsException;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -62,7 +53,7 @@ public class ProdutosController {
 
         Usuario usuarioLogado = getUsuarioLogado();
 
-        Optional<Produto> optionalProduto = produtoRepository.findById(produtoId);
+        Optional<Produto> optionalProduto = FindById.executa(produtoId, produtoRepository);;
         verificaSeExisteProduto(produtoId, optionalProduto);
 
         Produto produto = optionalProduto.get();

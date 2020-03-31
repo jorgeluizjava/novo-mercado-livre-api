@@ -1,6 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
+import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -38,7 +39,7 @@ public class ProdutoOpiniao {
     private Usuario usuario;
 
     @Deprecated
-    public ProdutoOpiniao(Long produtoOpiniaoId) {
+    private ProdutoOpiniao() {
     }
 
     public ProdutoOpiniao(@Min(value = 1) @Max(value = 5) int nota, @NotEmpty String titulo, @NotEmpty String descricao, @NotNull Produto produto, @NotNull Usuario usuarioLogado) {
@@ -47,5 +48,10 @@ public class ProdutoOpiniao {
         this.descricao = descricao;
         this.produto = produto;
         this.usuario = usuarioLogado;
+
+        Assert.isTrue(nota >= 1 && nota <= 5, "A nota deve estar entre 1 e 5.");
+        Assert.hasText(titulo, "Título não pode ser vazio");
+        Assert.notNull(produto, "Produto não informado.");
+        Assert.notNull(usuarioLogado, "Usuário não informado.");
     }
 }
