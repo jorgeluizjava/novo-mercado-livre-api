@@ -26,7 +26,7 @@ public class VerificaSeCategoriaSuperiorExisteValidator implements Validator {
             return;
         }
 
-        Optional<Categoria> optionalCategoria = FindById.executa(categoriaRequest.getCategoriaSuperiorId(), categoriaRepository);
+        Optional<Categoria> optionalCategoria = categoriaRepository.findById(categoriaRequest.getCategoriaSuperiorId());
         if (!optionalCategoria.isPresent()) {
             errors.rejectValue("categoriaSuperiorId", null, "Categoria superior ID: " + categoriaRequest.getCategoriaSuperiorId() + " não encontrada.");
         }

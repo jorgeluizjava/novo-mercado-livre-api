@@ -28,7 +28,7 @@ public class VerificaSeCategoriaExisteValidator implements Validator {
             return;
         }
 
-        Optional<Categoria> optionalCategoria = FindById.executa(produtoRequest.getCategoriaId(), categoriaRepository);
+        Optional<Categoria> optionalCategoria = categoriaRepository.findById(produtoRequest.getCategoriaId());
         if (!optionalCategoria.isPresent()) {
             errors.rejectValue("categoriaId", null, "Não foi encontrada categoria para o categoriaId: " + produtoRequest.getCategoriaId());
         }

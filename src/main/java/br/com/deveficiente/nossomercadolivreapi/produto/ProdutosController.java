@@ -53,19 +53,10 @@ public class ProdutosController {
 
         Usuario usuarioLogado = getUsuarioLogado();
 
-        Optional<Produto> optionalProduto = FindById.executa(produtoId, produtoRepository);;
-        verificaSeExisteProduto(produtoId, optionalProduto);
-
-        Produto produto = optionalProduto.get();
+        Produto produto = FindById.executa(produtoId, produtoRepository);
 
         ProdutoOpiniao produtoOpiniao = produtoOpiniaoRequest.criaProdutoOpiniao(produto, usuarioLogado, usuarioRepository, produtoRepository);
         produtoOpiniaoRepository.save(produtoOpiniao);
-    }
-
-    private void verificaSeExisteProduto(@PathVariable("produtoId") Long produtoId, Optional<Produto> optionalProduto) {
-        if (!optionalProduto.isPresent()) {
-            throw new IllegalArgumentException("produtoId: " + produtoId + " não encontrado.");
-        }
     }
 
     private Usuario getUsuarioLogado() {

@@ -1,5 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.categoria;
 
+import org.springframework.util.Assert;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Optional;
@@ -31,9 +33,13 @@ public class Categoria {
      * @param categoriaSuperior
      */
     public Categoria(@NotEmpty String nome, Optional<Categoria> categoriaSuperior) {
-        this.nome = nome;
+
+        Assert.hasText(nome, "Nome não foi informado.");
+
         if (categoriaSuperior != null && categoriaSuperior.isPresent()) {
             this.categoriaSuperior = categoriaSuperior.get();
         }
+
+        this.nome = nome;
     }
 }

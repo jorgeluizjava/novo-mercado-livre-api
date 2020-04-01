@@ -10,9 +10,16 @@ import java.util.Optional;
 
 public class FindById {
 
-    public static <T> Optional<T> executa(Long id, CrudRepository<T, Long> repository) {
+    public static <T> T executa(Long id, CrudRepository<T, Long> repository) {
+
         Assert.notNull(id, "id não pode ser nulo.");
-        return repository.findById(id);
+
+        Optional<T> entityOptional = repository.findById(id);
+        if (!entityOptional.isPresent()) {
+            throw new IllegalArgumentException("id: " + id + " não encontrado.");
+        }
+
+        return entityOptional.get();
     }
 
 }

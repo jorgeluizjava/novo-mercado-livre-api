@@ -102,12 +102,8 @@ public class ProdutoRequest {
 
     public Produto criaProduto(Usuario usuario, CategoriaRepository categoriaRepository, Uploader uploader) {
 
-        Optional<Categoria> optionalCategoria = FindById.executa(categoriaId, categoriaRepository);
-        if (!optionalCategoria.isPresent()) {
-            throw new IllegalArgumentException("categoriaId: " + categoriaId + " não encontrada.");
-        }
+        Categoria categoria = categoriaRepository.findById(categoriaId).get();
 
-        Categoria categoria = optionalCategoria.get();
         List<String> urlsFotos = uploader.upload(fotos);
         return new Produto(usuario, categoria, nome, valor, quantidade, descricao, urlsFotos, caracteristicas);
     }

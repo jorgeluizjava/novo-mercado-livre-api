@@ -41,17 +41,7 @@ public class CategoriaRequest {
         }
 
         Optional<Categoria> optionalCategoria = categoriaRepository.findById(categoriaSuperiorId);
-        verificaSeExisteCategoriaSuperior(optionalCategoria);
 
         return new Categoria(nome, optionalCategoria);
     }
-
-    private void verificaSeExisteCategoriaSuperior(Optional<Categoria> optionalCategoria) {
-        if (categoriaSuperiorId != null && categoriaSuperiorId > 0) {
-            if (!optionalCategoria.isPresent()) {
-                throw new IllegalArgumentException("Categoria superior ID: " + categoriaSuperiorId + " não encontrada.");
-            }
-        }
-    }
-
 }
