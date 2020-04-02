@@ -2,6 +2,7 @@ package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
 import br.com.deveficiente.nossomercadolivreapi.categoria.CategoriaRepository;
+import br.com.deveficiente.nossomercadolivreapi.shared.FindById;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 

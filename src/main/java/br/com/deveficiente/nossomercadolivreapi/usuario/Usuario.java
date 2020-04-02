@@ -27,7 +27,7 @@ public class Usuario {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Deprecated
-    public Usuario() {
+    private Usuario() {
     }
 
     /**
@@ -37,6 +37,7 @@ public class Usuario {
      */
     public Usuario(@NotEmpty @Email String login, @NotNull BCryptPassword bCryptPassword) {
 
+        Assert.hasText(login, "Login não informado.");
         Assert.notNull(bCryptPassword, "BCryptPassword não informado.");
 
         this.login = login;
@@ -45,5 +46,9 @@ public class Usuario {
 
     public String getSenha() {
         return senha;
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
     }
 }

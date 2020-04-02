@@ -1,5 +1,6 @@
 package br.com.deveficiente.nossomercadolivreapi.categoria;
 
+import br.com.deveficiente.nossomercadolivreapi.shared.FindById;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -24,6 +25,7 @@ public class VerificaSeCategoriaSuperiorExisteValidator implements Validator {
         if (categoriaRequest.getCategoriaSuperiorId() == null || categoriaRequest.getCategoriaSuperiorId() <= 0) {
             return;
         }
+
         Optional<Categoria> optionalCategoria = categoriaRepository.findById(categoriaRequest.getCategoriaSuperiorId());
         if (!optionalCategoria.isPresent()) {
             errors.rejectValue("categoriaSuperiorId", null, "Categoria superior ID: " + categoriaRequest.getCategoriaSuperiorId() + " não encontrada.");

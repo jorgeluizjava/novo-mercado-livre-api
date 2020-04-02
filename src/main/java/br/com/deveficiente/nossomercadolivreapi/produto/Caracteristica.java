@@ -1,5 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
+import org.springframework.util.Assert;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -24,10 +26,15 @@ public class Caracteristica {
     private Produto produto;
 
     @Deprecated
-    public Caracteristica() {
+    private Caracteristica() {
     }
 
     public Caracteristica(@NotEmpty String nome, @NotEmpty String descricao, @NotNull Produto produto) {
+
+        Assert.hasText(nome, "Nome da caracteristica não foi informado.");
+        Assert.hasText(descricao, "Descrição da caracteristica não foi informado");
+        Assert.notNull(produto, "Produto não foi informado.");
+
         this.nome = nome;
         this.descricao = descricao;
         this.produto = produto;

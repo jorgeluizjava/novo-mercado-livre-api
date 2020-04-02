@@ -50,7 +50,7 @@ public class Produto {
     private List<Caracteristica> caracteristicas = new ArrayList<>();
 
     @Deprecated
-    public Produto() {
+    private Produto() {
     }
 
     public Produto(@NotNull Usuario usuario,
@@ -79,6 +79,10 @@ public class Produto {
 
         criaFotos(urlsFotos);
         criaCaracteristicas(caracteristicasProduto);
+    }
+
+    public Long getProdutoId() {
+        return produtoId;
     }
 
     private void criaFotos(List<String> urlsFotos) {

@@ -1,5 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
+import org.springframework.util.Assert;
+
 import javax.validation.constraints.NotEmpty;
 
 public class CaracteristicaRequest {
@@ -19,6 +21,7 @@ public class CaracteristicaRequest {
     }
 
     public Caracteristica criaCaracteristica(Produto produto) {
+        Assert.notNull(produto, "Produto não informado.");
         return new Caracteristica(nome, descricao, produto);
     }
 }
