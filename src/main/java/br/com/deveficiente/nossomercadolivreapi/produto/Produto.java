@@ -85,6 +85,10 @@ public class Produto {
         return produtoId;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     private void criaFotos(List<String> urlsFotos) {
         for (String url : urlsFotos) {
             Foto foto = new Foto(url, this);
