@@ -44,6 +44,10 @@ public class Usuario {
         this.senha = bCryptPassword.getPassword();
     }
 
+    public String getLogin() {
+        return login;
+    }
+
     public String getSenha() {
         return senha;
     }
