@@ -1,13 +1,11 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
-import br.com.deveficiente.nossomercadolivreapi.shared.infra.Email;
-import br.com.deveficiente.nossomercadolivreapi.shared.infra.EnviadorDeEmailService;
+import br.com.deveficiente.nossomercadolivreapi.email.Email;
+import br.com.deveficiente.nossomercadolivreapi.email.EnviadorDeEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.validation.constraints.NotBlank;
 
 @Service
 public class NotificaDonoDoProdutoService {
