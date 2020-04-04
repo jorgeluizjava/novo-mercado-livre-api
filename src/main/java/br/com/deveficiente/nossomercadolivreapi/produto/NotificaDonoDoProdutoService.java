@@ -10,23 +10,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.constraints.NotBlank;
 
 @Service
-public class ProdutoPerguntaService {
+public class NotificaDonoDoProdutoService {
 
     @Autowired
     private EnviadorDeEmailService enviadorDeEmailService;
 
-    public void notificaVendedor(ProdutoPergunta produtoPergunta, UriComponentsBuilder uriComponentsBuilder) {
+    public void executa(ProdutoPergunta produtoPergunta, UriComponentsBuilder uriComponentsBuilder) {
 
         Assert.notNull(produtoPergunta, "Produto Pergunta não pode ser nulo.");
 
-        String de = produtoPergunta.getEmailUsuario();
-        String para = produtoPergunta.getEmailVendedor();
-        String assunto = para + " você tem uma nova pergunta!";
-
-        String link = produtoPergunta.getLinkDetalheProduto(uriComponentsBuilder);
-        String corpo = produtoPergunta.getTitulo() + " \n" + "Detalhe produto: " + link;
-
-        Email email = new Email(de, para, assunto, corpo);
+        Email email = produtoPergunta.constroiNotificaoParaDonoProduto(uriComponentsBuilder);
         enviadorDeEmailService.envia(email);
     }
 }

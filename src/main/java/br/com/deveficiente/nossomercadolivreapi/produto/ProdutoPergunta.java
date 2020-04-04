@@ -1,5 +1,6 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
+import br.com.deveficiente.nossomercadolivreapi.shared.infra.Email;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import org.springframework.util.Assert;
 import org.springframework.web.util.UriComponents;
@@ -48,24 +49,27 @@ public class ProdutoPergunta {
         this.usuario = usuario;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public Email constroiNotificaoParaDonoProduto(UriComponentsBuilder uriComponentsBuilder) {
+
+        UriComponents uriComponents = uriComponentsBuilder
+                                            .path("/api/produtos/{produtoId}/detalhes")
+                                            .buildAndExpand(produto.getProdutoId());
+
+        String de = getEmailUsuario();
+        String para = getEmailVendedor();
+        String assunto = para + " você tem uma nova pergunta!";
+
+        String link = uriComponents.toUriString();
+        String corpo = titulo + " \n" + "Detalhe produto: " + link;
+
+        return new Email(de, para, assunto, corpo);
     }
 
-    public String getEmailVendedor() {
+    private String getEmailVendedor() {
         return produto.getUsuario().getLogin();
     }
 
-    public String getEmailUsuario() {
+    private String getEmailUsuario() {
         return usuario.getLogin();
-    }
-
-    public String getLinkDetalheProduto(UriComponentsBuilder uriComponentsBuilder) {
-        UriComponents uriComponents = uriComponentsBuilder
-                                            .path("/produtos/{produtoId}/detalhes")
-                                            .buildAndExpand(produto.getProdutoId());
-
-
-        return uriComponents.toUriString();
     }
 }
