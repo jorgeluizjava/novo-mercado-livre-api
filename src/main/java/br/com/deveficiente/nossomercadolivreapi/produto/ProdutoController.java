@@ -1,14 +1,15 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.CategoriaRepository;
-import br.com.deveficiente.nossomercadolivreapi.shared.FindById;
 import br.com.deveficiente.nossomercadolivreapi.shared.infra.Uploader;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -28,9 +29,6 @@ public class ProdutoController {
     private ProdutoRepository produtoRepository;
 
     @Autowired
-    private ProdutoPergutaRepository produtoPerguntaRepository;
-
-    @Autowired
     private NotificaDonoDoProdutoService notificaDonoDoProdutoService;
 
     @InitBinder(value = {"produtoRequest"})
@@ -39,6 +37,7 @@ public class ProdutoController {
     }
 
     @PostMapping(value = "/api/produtos")
+    @Transactional
     public void cria(@Valid ProdutoRequest produtoRequest) {
 
         Usuario usuario = getUsuarioVendedorLogado();

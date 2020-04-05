@@ -6,6 +6,7 @@ import br.com.deveficiente.nossomercadolivreapi.shared.infra.Uploader;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +31,7 @@ public class PerguntaProdutoController {
     private NotificaDonoDoProdutoService notificaDonoDoProdutoService;
 
     @PostMapping(path = "/api/produtos/{produtoId}/pergunta")
+    @Transactional
     public void efetuaPerguntaPara(@PathVariable("produtoId") Long produtoId,
                                    @RequestBody @Valid ProdutoPerguntaRequest produtoPerguntaRequest,
                                    UriComponentsBuilder uriComponentsBuilder) {

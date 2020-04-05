@@ -1,6 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.categoria;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class CategoriaController {
     }
 
     @PostMapping
+    @Transactional
     public void cria(@RequestBody @Valid CategoriaRequest categoriaRequest) {
         Categoria novaCategoria = categoriaRequest.criaCategoria(categoriaRepository);
         categoriaRepository.save(novaCategoria);

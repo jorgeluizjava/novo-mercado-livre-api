@@ -20,6 +20,7 @@ public class EnviadorDeEmailService {
                 email.getAssunto(),
                 email.getCorpo());
 
+
         System.out.println("Email enviado com sucesso.");
 
         emailRepository.save(email);
