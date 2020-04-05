@@ -1,10 +1,14 @@
-package br.com.deveficiente.nossomercadolivreapi.shared.infra;
+package br.com.deveficiente.nossomercadolivreapi.email;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 @Service
 public class EnviadorDeEmailService {
+
+    @Autowired
+    private EmailRepository emailRepository;
 
     public void envia(Email email) {
 
@@ -16,6 +20,9 @@ public class EnviadorDeEmailService {
                 email.getAssunto(),
                 email.getCorpo());
 
+
         System.out.println("Email enviado com sucesso.");
+
+        emailRepository.save(email);
     }
 }

@@ -4,12 +4,12 @@ import br.com.deveficiente.nossomercadolivreapi.shared.FindById;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @RestController
-
 public class OpinicaoProdutoController {
 
     @Autowired
@@ -22,6 +22,7 @@ public class OpinicaoProdutoController {
     private UsuarioRepository usuarioRepository;
 
     @PostMapping(path = "/api/produtos/{produtoId}/opiniao")
+    @Transactional
     public void registraOpiniao(@PathVariable("produtoId") Long produtoId, @RequestBody @Valid ProdutoOpiniaoRequest produtoOpiniaoRequest) {
 
         Usuario usuarioLogado = getUsuarioLogado();
