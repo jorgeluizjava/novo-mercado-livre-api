@@ -50,7 +50,7 @@ public class Produto {
     private List<Caracteristica> caracteristicas = new ArrayList<>();
 
     @Deprecated
-    private Produto() {
+    Produto() {
     }
 
     public Produto(@NotNull Usuario usuario,
@@ -85,8 +85,36 @@ public class Produto {
         return produtoId;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
     public Usuario getUsuario() {
         return usuario;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public List<Caracteristica> getCaracteristicas() {
+        return caracteristicas;
+    }
+
+    public List<Foto> getFotos() {
+        return fotos;
     }
 
     private void criaFotos(List<String> urlsFotos) {

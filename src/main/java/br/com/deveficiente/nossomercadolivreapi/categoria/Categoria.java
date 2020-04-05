@@ -24,7 +24,7 @@ public class Categoria {
     private Categoria categoriaSuperior;
 
     @Deprecated
-    private Categoria() {
+    Categoria() {
     }
 
     /**
@@ -41,5 +41,17 @@ public class Categoria {
         }
 
         this.nome = nome;
+    }
+
+    public Long getCategoriaId() {
+        return categoriaId;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public Categoria getCategoriaSuperior() {
+        return categoriaSuperior;
     }
 }
