@@ -74,6 +74,12 @@ public class ProdutoPergunta {
         return new Email(de, para, assunto, corpo);
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+
+
     private Usuario getEmailVendedor() {
         return produto.getUsuario();
     }

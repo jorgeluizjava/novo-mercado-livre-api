@@ -2,14 +2,13 @@ package br.com.deveficiente.nossomercadolivreapi.produto.detalhe;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
 import br.com.deveficiente.nossomercadolivreapi.produto.Produto;
+import br.com.deveficiente.nossomercadolivreapi.produto.ProdutoPergunta;
 import br.com.deveficiente.nossomercadolivreapi.produto.ProdutoPergutaRepository;
 import br.com.deveficiente.nossomercadolivreapi.shared.Markdown;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -25,8 +24,9 @@ public class ProdutoDetalheDTO {
     private List<FotoProdutoDetalheDTO> fotos;
     private List<PerguntaProdutoDetalheDTO> perguntasProduto;
     private Long categoriaId;
-    private List<CategoriaProdutoDetalheDTO> hierarquiaCategorias = new ArrayList<>();
+    private Stack<CategoriaProdutoDetalheDTO> hierarquiaCategorias = new Stack<>();
     private String linkVendedor;
+    private OpiniaoProdutoDetalheDTO opiniao;
 
     public ProdutoDetalheDTO(Produto produto, ProdutoPergutaRepository produtoPergutaRepository, UriComponentsBuilder uriComponentsBuilder) {
         produtoId = produto.getProdutoId();
@@ -37,10 +37,11 @@ public class ProdutoDetalheDTO {
         quantidade = produto.getQuantidade();
         caracteristicas = extraiCaracteristicasDTOs(produto);
         fotos = extraiFotosDTOs(produto);
-        perguntasProduto = extraiPerguntasDTOs(produto, produtoPergutaRepository);
+        perguntasProduto = extraiPerguntasDTOs(produto);
         categoriaId = produto.getCategoria().getCategoriaId();
         hierarquiaCategorias = extraiCategorias(produto, uriComponentsBuilder);
         linkVendedor = extraiLinkVendedor(produto, uriComponentsBuilder);
+        opiniao = new OpiniaoProdutoDetalheDTO(produto);
     }
 
     public Long getProdutoId() {
@@ -91,6 +92,10 @@ public class ProdutoDetalheDTO {
         return linkVendedor;
     }
 
+    public OpiniaoProdutoDetalheDTO getOpiniao() {
+        return opiniao;
+    }
+
     private List<CaracteristicaProdutoDetalheDTO> extraiCaracteristicasDTOs(Produto produto) {
         return produto
                 .getCaracteristicas()
@@ -107,25 +112,26 @@ public class ProdutoDetalheDTO {
                 .collect(toList());
     }
 
-    private List<PerguntaProdutoDetalheDTO> extraiPerguntasDTOs(Produto produto, ProdutoPergutaRepository produtoPergutaRepository) {
-        return produtoPergutaRepository
-                .findAllByProduto(produto)
+    private List<PerguntaProdutoDetalheDTO> extraiPerguntasDTOs(Produto produto) {
+
+        return produto
+                .getPerguntasEmOrdemDeDataDecrescente()
                 .stream()
                 .map(PerguntaProdutoDetalheDTO::new)
                 .collect(toList());
     }
 
-    private List<CategoriaProdutoDetalheDTO> extraiCategorias(Produto produto, UriComponentsBuilder uriComponentsBuilder) {
+    private Stack<CategoriaProdutoDetalheDTO> extraiCategorias(Produto produto, UriComponentsBuilder uriComponentsBuilder) {
 
-        List<CategoriaProdutoDetalheDTO> categorias = new ArrayList<>();
-        Categoria categoria = produto.getCategoria();
-        while (categoria != null) {
+        Stack<CategoriaProdutoDetalheDTO> stackCategorias = new Stack<>();
+
+        for (Categoria categoria : produto.getCategorias()) {
             CategoriaProdutoDetalheDTO categoriaProdutoDetalheDTO = new CategoriaProdutoDetalheDTO(categoria, uriComponentsBuilder);
-            categorias.add(categoriaProdutoDetalheDTO);
-            categoria = categoria.getCategoriaSuperior();
+            stackCategorias.add(categoriaProdutoDetalheDTO);
         }
-        Collections.reverse(categorias);
-        return categorias;
+
+        return stackCategorias;
+
     }
 
     private String extraiLinkVendedor(Produto produto, UriComponentsBuilder uriComponentsBuilder) {

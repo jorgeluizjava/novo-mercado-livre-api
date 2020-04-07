@@ -1,17 +1,22 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
+import br.com.deveficiente.nossomercadolivreapi.produto.detalhe.CategoriaProdutoDetalheDTO;
+import br.com.deveficiente.nossomercadolivreapi.produto.detalhe.PerguntaProdutoDetalheDTO;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Entity
 @Table(name = "produto")
@@ -48,6 +53,12 @@ public class Produto {
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Caracteristica> caracteristicas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ProdutoPergunta> perguntas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ProdutoOpiniao> opinioes = new ArrayList<>();
 
     @Deprecated
     Produto() {
@@ -115,6 +126,38 @@ public class Produto {
 
     public List<Foto> getFotos() {
         return fotos;
+    }
+
+    public List<ProdutoPergunta> getPerguntas() {
+        return perguntas;
+    }
+
+    public List<ProdutoPergunta> getPerguntasEmOrdemDeDataDecrescente() {
+        Comparator<ProdutoPergunta> ordenaPorDataCriacaoDecrescente = (pergunta1, pergunta2) -> pergunta2.getCreatedAt().compareTo(pergunta1.getCreatedAt());
+        return perguntas
+                .stream()
+                .sorted(ordenaPorDataCriacaoDecrescente)
+                .collect(toList());
+    }
+
+    public List<ProdutoOpiniao> getOpinioes() {
+        return opinioes;
+    }
+
+    public BigDecimal calculaMediaDasOpinioes() {
+        return BigDecimal.valueOf(opinioes.stream().collect(Collectors.averagingDouble(ProdutoOpiniao::getNota)));
+    }
+
+    public Stack<Categoria> getCategorias() {
+
+        Stack<Categoria> categorias = new Stack<>();
+
+        while (categoria != null) {
+            categorias.add(categoria);
+            categoria = categoria.getCategoriaSuperior();
+        }
+
+        return categorias;
     }
 
     private void criaFotos(List<String> urlsFotos) {
