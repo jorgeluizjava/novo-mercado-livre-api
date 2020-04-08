@@ -1,8 +1,5 @@
 package br.com.deveficiente.nossomercadolivreapi.shared;
 
-import br.com.deveficiente.nossomercadolivreapi.produto.Produto;
-import br.com.deveficiente.nossomercadolivreapi.produto.ProdutoRepository;
-import com.sun.xml.bind.v2.model.core.ID;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.util.Assert;
 

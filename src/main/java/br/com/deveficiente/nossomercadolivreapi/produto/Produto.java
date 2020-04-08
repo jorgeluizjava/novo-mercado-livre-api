@@ -1,6 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
+import br.com.deveficiente.nossomercadolivreapi.categoria.OrdenacaoCategoria;
 import br.com.deveficiente.nossomercadolivreapi.produto.detalhe.CategoriaProdutoDetalheDTO;
 import br.com.deveficiente.nossomercadolivreapi.produto.detalhe.PerguntaProdutoDetalheDTO;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
@@ -14,6 +15,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -54,7 +58,7 @@ public class Produto {
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Caracteristica> caracteristicas = new ArrayList<>();
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<ProdutoPergunta> perguntas = new ArrayList<>();
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -128,16 +132,9 @@ public class Produto {
         return fotos;
     }
 
-    public List<ProdutoPergunta> getPerguntas() {
+    public List<ProdutoPergunta> getPerguntas(Comparator<ProdutoPergunta> comparator) {
+        perguntas.sort(comparator);
         return perguntas;
-    }
-
-    public List<ProdutoPergunta> getPerguntasEmOrdemDeDataDecrescente() {
-        Comparator<ProdutoPergunta> ordenaPorDataCriacaoDecrescente = (pergunta1, pergunta2) -> pergunta2.getCreatedAt().compareTo(pergunta1.getCreatedAt());
-        return perguntas
-                .stream()
-                .sorted(ordenaPorDataCriacaoDecrescente)
-                .collect(toList());
     }
 
     public List<ProdutoOpiniao> getOpinioes() {
@@ -148,7 +145,7 @@ public class Produto {
         return BigDecimal.valueOf(opinioes.stream().collect(Collectors.averagingDouble(ProdutoOpiniao::getNota)));
     }
 
-    public Stack<Categoria> getCategorias() {
+    public Stack<Categoria> getCategorias(OrdenacaoCategoria ordenacaoCategoria) {
 
         Stack<Categoria> categorias = new Stack<>();
 
@@ -157,6 +154,9 @@ public class Produto {
             categoria = categoria.getCategoriaSuperior();
         }
 
+        if (!ordenacaoCategoria.isOrdenaPorSuperior()) {
+            Collections.reverse(categorias);
+        }
         return categorias;
     }
 

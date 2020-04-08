@@ -1,6 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.produto.detalhe;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
+import br.com.deveficiente.nossomercadolivreapi.categoria.OrdenacaoCategoria;
 import br.com.deveficiente.nossomercadolivreapi.produto.Produto;
 import br.com.deveficiente.nossomercadolivreapi.produto.ProdutoPergunta;
 import br.com.deveficiente.nossomercadolivreapi.produto.ProdutoPergutaRepository;
@@ -114,8 +115,10 @@ public class ProdutoDetalheDTO {
 
     private List<PerguntaProdutoDetalheDTO> extraiPerguntasDTOs(Produto produto) {
 
+        Comparator<ProdutoPergunta> ordenaPorDataCriacaoDecrescente = (pergunta1, pergunta2) -> pergunta2.getCreatedAt().compareTo(pergunta1.getCreatedAt());
+
         return produto
-                .getPerguntasEmOrdemDeDataDecrescente()
+                .getPerguntas(ordenaPorDataCriacaoDecrescente)
                 .stream()
                 .map(PerguntaProdutoDetalheDTO::new)
                 .collect(toList());
@@ -125,7 +128,7 @@ public class ProdutoDetalheDTO {
 
         Stack<CategoriaProdutoDetalheDTO> stackCategorias = new Stack<>();
 
-        for (Categoria categoria : produto.getCategorias()) {
+        for (Categoria categoria : produto.getCategorias(new OrdenacaoCategoria(true))) {
             CategoriaProdutoDetalheDTO categoriaProdutoDetalheDTO = new CategoriaProdutoDetalheDTO(categoria, uriComponentsBuilder);
             stackCategorias.add(categoriaProdutoDetalheDTO);
         }
