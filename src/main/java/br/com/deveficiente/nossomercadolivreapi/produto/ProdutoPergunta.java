@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "produto_pergunta")
@@ -49,6 +50,14 @@ public class ProdutoPergunta {
         this.usuario = usuario;
     }
 
+    public Long getPerguntaId() {
+        return perguntaId;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
     public Email constroiNotificaoParaDonoProduto(UriComponentsBuilder uriComponentsBuilder) {
 
         UriComponents uriComponents = uriComponentsBuilder
@@ -65,8 +74,14 @@ public class ProdutoPergunta {
         return new Email(de, para, assunto, corpo);
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+
+
     private Usuario getEmailVendedor() {
         return produto.getUsuario();
     }
-
+    
 }

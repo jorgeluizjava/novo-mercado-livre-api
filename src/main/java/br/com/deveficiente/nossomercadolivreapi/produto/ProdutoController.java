@@ -28,9 +28,6 @@ public class ProdutoController {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    @Autowired
-    private NotificaDonoDoProdutoService notificaDonoDoProdutoService;
-
     @InitBinder(value = {"produtoRequest"})
     public void initBinderProduto(WebDataBinder dataBinder) {
         dataBinder.addValidators(new VerificaSeCategoriaExisteValidator(categoriaRepository));

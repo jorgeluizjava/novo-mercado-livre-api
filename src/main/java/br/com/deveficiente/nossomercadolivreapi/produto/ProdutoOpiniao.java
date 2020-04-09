@@ -54,4 +54,16 @@ public class ProdutoOpiniao {
         Assert.notNull(produto, "Produto não informado.");
         Assert.notNull(usuarioLogado, "Usuário não informado.");
     }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public int getNota() {
+        return nota;
+    }
 }
