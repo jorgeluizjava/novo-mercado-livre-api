@@ -6,10 +6,12 @@ import br.com.deveficiente.nossomercadolivreapi.produto.Produto;
 import br.com.deveficiente.nossomercadolivreapi.produto.ProdutoPergunta;
 import br.com.deveficiente.nossomercadolivreapi.produto.ProdutoPergutaRepository;
 import br.com.deveficiente.nossomercadolivreapi.shared.Markdown;
+import br.com.deveficiente.nossomercadolivreapi.shared.Ordenacao;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -25,7 +27,7 @@ public class ProdutoDetalheDTO {
     private List<FotoProdutoDetalheDTO> fotos;
     private List<PerguntaProdutoDetalheDTO> perguntasProduto;
     private Long categoriaId;
-    private Stack<CategoriaProdutoDetalheDTO> hierarquiaCategorias = new Stack<>();
+    private List<CategoriaProdutoDetalheDTO> hierarquiaCategorias = new ArrayList<>();
     private String linkVendedor;
     private OpiniaoProdutoDetalheDTO opiniao;
 
@@ -124,17 +126,15 @@ public class ProdutoDetalheDTO {
                 .collect(toList());
     }
 
-    private Stack<CategoriaProdutoDetalheDTO> extraiCategorias(Produto produto, UriComponentsBuilder uriComponentsBuilder) {
+    private List<CategoriaProdutoDetalheDTO> extraiCategorias(Produto produto, UriComponentsBuilder uriComponentsBuilder) {
 
-        Stack<CategoriaProdutoDetalheDTO> stackCategorias = new Stack<>();
-
-        for (Categoria categoria : produto.getCategorias(new OrdenacaoCategoria(true))) {
-            CategoriaProdutoDetalheDTO categoriaProdutoDetalheDTO = new CategoriaProdutoDetalheDTO(categoria, uriComponentsBuilder);
-            stackCategorias.add(categoriaProdutoDetalheDTO);
-        }
-
-        return stackCategorias;
-
+        return produto
+                .getCategorias(Ordenacao.MAE_PARA_FILHA)
+                .stream()
+                .map(categoria -> {
+                    return new CategoriaProdutoDetalheDTO(categoria, uriComponentsBuilder);
+                })
+                .collect(toList());
     }
 
     private String extraiLinkVendedor(Produto produto, UriComponentsBuilder uriComponentsBuilder) {

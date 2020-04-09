@@ -4,6 +4,7 @@ import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
 import br.com.deveficiente.nossomercadolivreapi.categoria.OrdenacaoCategoria;
 import br.com.deveficiente.nossomercadolivreapi.produto.detalhe.CategoriaProdutoDetalheDTO;
 import br.com.deveficiente.nossomercadolivreapi.produto.detalhe.PerguntaProdutoDetalheDTO;
+import br.com.deveficiente.nossomercadolivreapi.shared.Ordenacao;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
@@ -52,16 +53,16 @@ public class Produto {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Foto> fotos = new ArrayList<>();
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private Set<Foto> fotos = new HashSet<>();
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Caracteristica> caracteristicas = new ArrayList<>();
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private Set<Caracteristica> caracteristicas = new HashSet<>();
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<ProdutoPergunta> perguntas = new ArrayList<>();
 
-    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ProdutoOpiniao> opinioes = new ArrayList<>();
 
     @Deprecated
@@ -124,37 +125,40 @@ public class Produto {
         return categoria;
     }
 
-    public List<Caracteristica> getCaracteristicas() {
+    public Set<Caracteristica> getCaracteristicas() {
         return caracteristicas;
     }
 
-    public List<Foto> getFotos() {
+    public Set<Foto> getFotos() {
         return fotos;
     }
 
     public List<ProdutoPergunta> getPerguntas(Comparator<ProdutoPergunta> comparator) {
-        perguntas.sort(comparator);
-        return perguntas;
+
+        return perguntas
+                .stream()
+                .sorted(comparator)
+                .collect(toList());
     }
 
     public List<ProdutoOpiniao> getOpinioes() {
-        return opinioes;
+        return Collections.unmodifiableList(opinioes);
     }
 
     public BigDecimal calculaMediaDasOpinioes() {
         return BigDecimal.valueOf(opinioes.stream().collect(Collectors.averagingDouble(ProdutoOpiniao::getNota)));
     }
 
-    public Stack<Categoria> getCategorias(OrdenacaoCategoria ordenacaoCategoria) {
+    public List<Categoria> getCategorias(Ordenacao ordenacao) {
 
-        Stack<Categoria> categorias = new Stack<>();
+        List<Categoria> categorias = new ArrayList<>();
 
         while (categoria != null) {
             categorias.add(categoria);
             categoria = categoria.getCategoriaSuperior();
         }
 
-        if (!ordenacaoCategoria.isOrdenaPorSuperior()) {
+        if (ordenacao.equals(Ordenacao.MAE_PARA_FILHA)) {
             Collections.reverse(categorias);
         }
         return categorias;

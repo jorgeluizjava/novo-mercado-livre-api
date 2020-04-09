@@ -5,6 +5,7 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Entity
 @Table(name = "produto_caracteristica")
@@ -46,5 +47,20 @@ public class Caracteristica {
 
     public String getDescricao() {
         return descricao;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Caracteristica that = (Caracteristica) o;
+        return nome.equals(that.nome) &&
+                descricao.equals(that.descricao) &&
+                produto.equals(that.produto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nome, descricao, produto);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Entity
 @Table(name = "produto_foto")
@@ -40,5 +41,20 @@ public class Foto {
 
     public String getUrl() {
         return url;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Foto foto = (Foto) o;
+        return Objects.equals(fotoId, foto.fotoId) &&
+                url.equals(foto.url) &&
+                produto.equals(foto.produto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fotoId, url, produto);
     }
 }
