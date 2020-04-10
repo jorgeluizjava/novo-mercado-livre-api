@@ -177,4 +177,9 @@ public class Produto {
             caracteristicas.add(caracteristica);
         }
     }
+
+    public void baixaQuantidadeEstoque(int quantidade) {
+        Assert.isTrue(this.quantidade >= quantidade, "Quantidade insuficiente");
+        this.quantidade -= quantidade;
+    }
 }
