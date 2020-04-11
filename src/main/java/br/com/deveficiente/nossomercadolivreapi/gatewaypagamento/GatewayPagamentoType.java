@@ -2,32 +2,37 @@ package br.com.deveficiente.nossomercadolivreapi.gatewaypagamento;
 
 import br.com.deveficiente.nossomercadolivreapi.compra.nova.Compra;
 import org.springframework.util.Assert;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public enum GatewayPagamentoType {
 
-    PAYPAL(new PaypalGateway()),
-    PAGSEGURO(new PagSeguroGateway());
+    PAYPAL {
+        @Override
+        public String geraUrl(Compra compra, UriComponentsBuilder uriComponentsBuilder) {
 
-    private GatewayPagamento gatewayPagamento;
+            Assert.notNull(compra, "Compra não pode ser nula.");
+            String urlCompraRetornoPagamento = getUrlCompraRetornoPagamento(compra, uriComponentsBuilder);
+            return "paypal.com/" + compra.getId() + "?redirectUrl=" + urlCompraRetornoPagamento;
+        }
+    },
+    PAGSEGURO {
+        @Override
+        public String geraUrl(Compra compra, UriComponentsBuilder uriComponentsBuilder) {
 
-    private GatewayPagamentoType(GatewayPagamento gatewayPagamento) {
-        this.gatewayPagamento = gatewayPagamento;
+            Assert.notNull(compra, "Compra não pode ser nula.");
+            String urlCompraRetornoPagamento = getUrlCompraRetornoPagamento(compra, uriComponentsBuilder);
+            return "pagseguro.com/" + compra.getId() + "?redirectUrl=" + urlCompraRetornoPagamento;
+        }
+    };
+
+    public abstract String geraUrl(Compra compra, UriComponentsBuilder uriComponentsBuilder);
+
+    private static String getUrlCompraRetornoPagamento(Compra compra, UriComponentsBuilder uriComponentsBuilder) {
+        return uriComponentsBuilder
+                        .cloneBuilder()
+                        .path("/api/compras/{id}/retorno-pagamento")
+                        .buildAndExpand(compra.getId())
+                        .toUriString();
     }
 
-    public String efetuaPagamento(Compra compra, UriComponentsBuilder uriComponentsBuilder) {
-
-        Assert.notNull(compra, "Compra não pode ser nula.");
-
-        String url = gatewayPagamento.paga(compra);
-
-        String urlCompraRetornoPagamento = uriComponentsBuilder
-                .cloneBuilder()
-                .path("/api/compras/{id}/retorno-pagamento")
-                .buildAndExpand(compra.getId())
-                .toUriString();
-
-        return url += "?redirectUrl=" + urlCompraRetornoPagamento;
-    }
 }

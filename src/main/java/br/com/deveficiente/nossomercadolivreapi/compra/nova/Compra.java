@@ -109,6 +109,10 @@ public class Compra {
         return new Email(de, para, assunto, corpo);
     }
 
+    public String getUrlGatewayPagamento(UriComponentsBuilder uriComponentsBuilder) {
+        return gatewayPagamentoType.geraUrl(this, uriComponentsBuilder);
+    }
+
     @Override
     public String toString() {
         return "Compra{" +

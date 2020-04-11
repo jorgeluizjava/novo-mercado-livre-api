@@ -1,8 +1,5 @@
 package br.com.deveficiente.nossomercadolivreapi.compra.nova;
 
-import br.com.deveficiente.nossomercadolivreapi.gatewaypagamento.GatewayPagamentoType;
-import br.com.deveficiente.nossomercadolivreapi.produto.NotificaDonoDoProdutoService;
-import br.com.deveficiente.nossomercadolivreapi.produto.Produto;
 import br.com.deveficiente.nossomercadolivreapi.produto.ProdutoRepository;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
@@ -27,10 +24,7 @@ public class EfetuaCompraController {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private CompraRepository compraRepository;
-
-    @Autowired
-    private NotificaDonoDoProdutoService notificaDonoDoProdutoService;
+    private EfetuaCompraService efetuaCompraService;
 
     @InitBinder(value = {"efetuaCompraRequest"})
     public void init(WebDataBinder dataBinder) {
@@ -45,18 +39,9 @@ public class EfetuaCompraController {
         Usuario usuarioLogado = getUsuarioLogado();
 
         Compra compra = efetuaCompraRequest.criaCompra(usuarioLogado, produtoRepository);
-        compraRepository.save(compra);
+        efetuaCompraService.executa(compra, uriComponentsBuilder);
 
-        Produto produto = compra.getProduto();
-        produto.baixaQuantidadeEstoque(compra.getQuantidade());
-        produtoRepository.save(produto);
-
-        notificaDonoDoProdutoService.executa(compra, uriComponentsBuilder);
-
-        GatewayPagamentoType gatewayPagamento = compra.getGatewayPagamentoType();
-        String urlRetorno = gatewayPagamento.efetuaPagamento(compra, uriComponentsBuilder);
-
-        return urlRetorno;
+        return compra.getUrlGatewayPagamento(uriComponentsBuilder);
     }
 
     private Usuario getUsuarioLogado() {
