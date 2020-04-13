@@ -30,7 +30,7 @@ public class VerificaQuantidadeDisponivelProduto implements Validator {
         }
 
         Produto produto = optionalProduto.get();
-        if (produto.aindaTemEstoque(efetuaCompraRequest.getQuantidade())) {
+        if (!produto.aindaTemEstoque(efetuaCompraRequest.getQuantidade())) {
             errors.rejectValue("produtoId", null, "quantidade do produto insuficiente, qtd: " + produto.getQuantidade());
         }
     }

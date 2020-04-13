@@ -54,11 +54,9 @@ public class EfetuaCompraRequest {
                 '}';
     }
 
-    public Compra criaCompra(Usuario usuarioLogado, ProdutoRepository produtoRepository) {
+    public Compra criaCompra(Usuario usuarioLogado, Produto produto) {
 
         Assert.notNull(usuarioLogado, "Usuario não pode ser nulo");
-
-        Produto produto = produtoRepository.findById(produtoId).get();
         GatewayPagamentoType gatewayPagamentoType = GatewayPagamentoType.valueOf(this.gatewayPagamento);
         return new Compra(usuarioLogado, produto, quantidade, gatewayPagamentoType);
     }

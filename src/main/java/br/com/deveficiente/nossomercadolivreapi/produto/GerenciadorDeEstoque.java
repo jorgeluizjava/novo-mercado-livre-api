@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.persistence.OptimisticLockException;
+
 @Service
 public class GerenciadorDeEstoque {
 
@@ -14,7 +16,12 @@ public class GerenciadorDeEstoque {
 
         Assert.notNull(produto, "Produto não pode ser nulo.");
 
-        produto.baixaQuantidadeEstoque(quantidadeSolicitada);
-        produtoRepository.save(produto);
+        try {
+            produto.baixaQuantidadeEstoque(quantidadeSolicitada);
+            produtoRepository.save(produto);
+        } catch (OptimisticLockException ex) {
+            throw new IllegalStateException("Não foi possível concluir a compra, o produto ficou indisponível.");
+        }
+
     }
 }

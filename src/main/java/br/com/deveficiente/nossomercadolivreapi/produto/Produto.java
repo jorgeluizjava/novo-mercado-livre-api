@@ -164,7 +164,7 @@ public class Produto {
         if (quantidadeSolicitada > quantidade) {
             return false;
         }
-        return false;
+        return true;
     }
 
     private void criaFotos(List<String> urlsFotos) {
