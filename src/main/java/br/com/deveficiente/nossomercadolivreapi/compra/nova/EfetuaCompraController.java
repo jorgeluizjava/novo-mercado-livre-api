@@ -47,12 +47,10 @@ public class EfetuaCompraController {
 
         Usuario usuarioLogado = getUsuarioLogado();
 
-        Produto produto = produtoRepository.findById(efetuaCompraRequest.getProdutoId()).get();
-
-        Compra compra = efetuaCompraRequest.criaCompra(usuarioLogado, produto);
+        Compra compra = efetuaCompraRequest.criaCompra(usuarioLogado, produtoRepository);
         compraRepository.save(compra);
 
-        gerenciadorDeEstoque.baixaEstoque(produto, compra.getQuantidade());
+        gerenciadorDeEstoque.baixaEstoque(efetuaCompraRequest);
 
         notificaDonoDoProdutoService.executa(compra, uriComponentsBuilder);
 
