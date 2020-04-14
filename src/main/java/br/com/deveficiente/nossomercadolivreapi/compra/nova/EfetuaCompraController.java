@@ -1,21 +1,19 @@
 package br.com.deveficiente.nossomercadolivreapi.compra.nova;
 
-import br.com.deveficiente.nossomercadolivreapi.produto.GerenciadorDeEstoque;
 import br.com.deveficiente.nossomercadolivreapi.produto.NotificaDonoDoProdutoService;
 import br.com.deveficiente.nossomercadolivreapi.produto.Produto;
 import br.com.deveficiente.nossomercadolivreapi.produto.ProdutoRepository;
+import br.com.deveficiente.nossomercadolivreapi.shared.FindById;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.persistence.OptimisticLockException;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 public class EfetuaCompraController {
@@ -30,27 +28,26 @@ public class EfetuaCompraController {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private GerenciadorDeEstoque gerenciadorDeEstoque;
-
-    @Autowired
     private NotificaDonoDoProdutoService notificaDonoDoProdutoService;
 
-    @InitBinder(value = {"efetuaCompraRequest"})
-    public void init(WebDataBinder dataBinder) {
-        dataBinder.addValidators(new VerificaSeProdutoExisteValidator(produtoRepository));
-        dataBinder.addValidators(new VerificaQuantidadeDisponivelProduto(produtoRepository));
-    }
-
-    @PostMapping(value = "/api/compras")
+    @PostMapping(value = "/api/produtos/{produtoId}/compras")
     @Transactional
-    public String efetuaCompra(@RequestBody @Valid EfetuaCompraRequest efetuaCompraRequest, UriComponentsBuilder uriComponentsBuilder) {
+    public String efetuaCompra(@PathVariable("produtoId") Long produtoId, @RequestBody @Valid EfetuaCompraRequest efetuaCompraRequest, UriComponentsBuilder uriComponentsBuilder) {
 
         Usuario usuarioLogado = getUsuarioLogado();
 
-        Compra compra = efetuaCompraRequest.criaCompra(usuarioLogado, produtoRepository);
-        compraRepository.save(compra);
+        Produto produto = FindById.executa(produtoId, produtoRepository);
+        Optional<ProdutoComQuantidade> possivelProdutoEstoque = produto.baixaQuantidadeEstoque(efetuaCompraRequest.getQuantidade());
 
-        gerenciadorDeEstoque.baixaEstoque(efetuaCompraRequest);
+        if (!possivelProdutoEstoque.isPresent()) {
+            throw new IllegalArgumentException("quantidade do produto insuficiente, qtd: " + produto.getQuantidade());
+        }
+
+        salvaProduto(produto);
+
+        ProdutoComQuantidade produtoComQuantidade = possivelProdutoEstoque.get();
+        Compra compra = new Compra(usuarioLogado, produtoComQuantidade, efetuaCompraRequest.getGatewayPagamentoType());
+        compraRepository.save(compra);
 
         notificaDonoDoProdutoService.executa(compra, uriComponentsBuilder);
 
@@ -60,5 +57,14 @@ public class EfetuaCompraController {
     private Usuario getUsuarioLogado() {
         String email = "usuario@email.com.br";
         return usuarioRepository.findByLogin(email).get();
+    }
+
+    private void salvaProduto(Produto produto) {
+
+        try {
+            produtoRepository.save(produto);
+        } catch (OptimisticLockException ex) {
+            throw new IllegalStateException("Não foi possível concluir a compra, o produto ficou indisponível.");
+        }
     }
 }

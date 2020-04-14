@@ -1,6 +1,7 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
+import br.com.deveficiente.nossomercadolivreapi.compra.nova.ProdutoComQuantidade;
 import br.com.deveficiente.nossomercadolivreapi.shared.Ordenacao;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import org.hibernate.validator.constraints.Length;
@@ -167,6 +168,14 @@ public class Produto {
         return true;
     }
 
+    public Optional<ProdutoComQuantidade> baixaQuantidadeEstoque(int quantidadeSolicitada) {
+        if (!aindaTemEstoque(quantidadeSolicitada)) {
+            return Optional.empty();
+        }
+        this.quantidade -= quantidadeSolicitada;
+        return Optional.of(new ProdutoComQuantidade(this, quantidadeSolicitada));
+    }
+
     private void criaFotos(List<String> urlsFotos) {
         for (String url : urlsFotos) {
             Foto foto = new Foto(url, this);
@@ -181,8 +190,4 @@ public class Produto {
         }
     }
 
-    public void baixaQuantidadeEstoque(int quantidade) {
-        Assert.isTrue(this.quantidade >= quantidade, "Quantidade insuficiente");
-        this.quantidade -= quantidade;
-    }
 }

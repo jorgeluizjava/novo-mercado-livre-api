@@ -50,19 +50,17 @@ public class Compra {
     }
 
     public Compra(@NotNull Usuario usuario,
-                  @NotNull Produto produto,
-                  @Min(value = 1) int quantidade,
+                  @NotNull ProdutoComQuantidade produtoComQuantidade,
                   @NotNull GatewayPagamentoType gatewayPagamentoType) {
 
         Assert.notNull(usuario, "Usuário não informado");
-        Assert.notNull(produto, "Produto não informado.");
+        Assert.notNull(produtoComQuantidade, "ProdutoQuantidade não informado.");
         Assert.notNull(gatewayPagamentoType, "GatewayPagamento não informado.");
-        Assert.isTrue(quantidade > 0, "Quantidade inválida");
 
         this.usuario = usuario;
-        this.produto = produto;
+        this.produto = produtoComQuantidade.getProduto();
+        this.quantidade = produtoComQuantidade.getQuantidade();
         this.gatewayPagamentoType = gatewayPagamentoType;
-        this.quantidade = quantidade;
         this.valor = calculaValorTotalCompra();
     }
 
