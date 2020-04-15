@@ -1,14 +1,11 @@
 package br.com.deveficiente.nossomercadolivreapi.produto;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
-import br.com.deveficiente.nossomercadolivreapi.categoria.OrdenacaoCategoria;
-import br.com.deveficiente.nossomercadolivreapi.produto.detalhe.CategoriaProdutoDetalheDTO;
-import br.com.deveficiente.nossomercadolivreapi.produto.detalhe.PerguntaProdutoDetalheDTO;
+import br.com.deveficiente.nossomercadolivreapi.compra.nova.ProdutoComQuantidade;
 import br.com.deveficiente.nossomercadolivreapi.shared.Ordenacao;
 import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -16,9 +13,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -30,6 +24,9 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long produtoId;
+
+    @Version
+    private Long version;
 
     @NotEmpty
     private String nome;
@@ -164,6 +161,21 @@ public class Produto {
         return categorias;
     }
 
+    public boolean aindaTemEstoque(int quantidadeSolicitada) {
+        if (quantidadeSolicitada > quantidade) {
+            return false;
+        }
+        return true;
+    }
+
+    public Optional<ProdutoComQuantidade> baixaQuantidadeEstoque(int quantidadeSolicitada) {
+        if (!aindaTemEstoque(quantidadeSolicitada)) {
+            return Optional.empty();
+        }
+        this.quantidade -= quantidadeSolicitada;
+        return Optional.of(new ProdutoComQuantidade(this, quantidadeSolicitada));
+    }
+
     private void criaFotos(List<String> urlsFotos) {
         for (String url : urlsFotos) {
             Foto foto = new Foto(url, this);
@@ -177,4 +189,5 @@ public class Produto {
             caracteristicas.add(caracteristica);
         }
     }
+
 }
