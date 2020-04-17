@@ -2,11 +2,12 @@ package br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.paypal;
 
 import br.com.deveficiente.nossomercadolivreapi.compra.nova.Compra;
 import br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.Pagamento;
+import br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.RetornoPagamentoCompraRequest;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class RetornoPagamentoPaypalRequest {
+public class RetornoPagamentoPaypalRequest implements RetornoPagamentoCompraRequest {
 
     /**
      * Parametro já é recebido na rota, estou usando aqui para poder efetuar uma validação mais especifica.
@@ -35,6 +36,7 @@ public class RetornoPagamentoPaypalRequest {
         this.status = status;
     }
 
+    @Override
     public Long getCompraId() {
         return compraId;
     }

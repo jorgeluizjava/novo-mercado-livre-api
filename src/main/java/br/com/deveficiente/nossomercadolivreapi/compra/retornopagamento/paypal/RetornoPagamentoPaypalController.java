@@ -5,6 +5,7 @@ import br.com.deveficiente.nossomercadolivreapi.compra.nova.CompraRepository;
 import br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.NovoPagamentoEvent;
 import br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.Pagamento;
 import br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.PagamentoRepository;
+import br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.VerificaSeCompraJaEstaConcluidaValidator;
 import br.com.deveficiente.nossomercadolivreapi.shared.FindById;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,7 +33,7 @@ public class RetornoPagamentoPaypalController {
 
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
-        dataBinder.addValidators(new VerificaSeCompraJaEstaConcluidaPayPalValidator(compraRepository));
+        dataBinder.addValidators(new VerificaSeCompraJaEstaConcluidaValidator(compraRepository));
     }
 
     @PostMapping(value = {"/api/retorno-pagamento/{compraId}/paypal"})

@@ -2,12 +2,13 @@ package br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.pagsegu
 
 import br.com.deveficiente.nossomercadolivreapi.compra.nova.Compra;
 import br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.Pagamento;
+import br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.RetornoPagamentoCompraRequest;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class RetornoPagamentoPagSeguroRequest {
+public class RetornoPagamentoPagSeguroRequest implements RetornoPagamentoCompraRequest {
 
     /**
      * Parametro já é recebido na rota, estou usando aqui para poder efetuar uma validação mais especifica.
@@ -33,12 +34,14 @@ public class RetornoPagamentoPagSeguroRequest {
         this.status = status;
     }
 
-    public Long getCompraId() {
-        return compraId;
-    }
-
     public Pagamento criaPagamento(Compra compra) {
         Assert.notNull(compra, "Compra não pode ser nula.");
         return new Pagamento(idTransacao, status.equals(PagSeguroStatus.SUCESSO) , compra);
     }
+
+    @Override
+    public Long getCompraId() {
+        return null;
+    }
+
 }
