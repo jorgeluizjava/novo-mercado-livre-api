@@ -1,5 +1,6 @@
 package br.com.deveficiente.nossomercadolivreapi.compra.nova;
 
+import br.com.deveficiente.nossomercadolivreapi.compra.retornopagamento.Pagamento;
 import br.com.deveficiente.nossomercadolivreapi.email.Email;
 import br.com.deveficiente.nossomercadolivreapi.gatewaypagamento.GatewayPagamentoType;
 import br.com.deveficiente.nossomercadolivreapi.produto.Produto;
@@ -107,8 +108,34 @@ public class Compra {
         return new Email(de, para, assunto, corpo);
     }
 
+    public BigDecimal getValor() {
+        return valor;
+    }
+
     public String getUrlGatewayPagamento(UriComponentsBuilder uriComponentsBuilder) {
         return gatewayPagamentoType.geraUrl(this, uriComponentsBuilder);
+    }
+
+    public void registra(Pagamento pagamento) {
+        Assert.notNull(pagamento, "Pagamento não pode ser nulo");
+        if (isConcluida()) {
+            throw new IllegalArgumentException("Operação inválida, Compra já foi concluída em outro momento.");
+        }
+        if (pagamento.comSucesso()) {
+            this.statusCompra = StatusCompra.CONCLUIDA;
+        }
+    }
+
+    public boolean isConcluida() {
+        return this.statusCompra.equals(StatusCompra.CONCLUIDA);
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public Usuario getVendedor() {
+        return produto.getUsuario();
     }
 
     @Override

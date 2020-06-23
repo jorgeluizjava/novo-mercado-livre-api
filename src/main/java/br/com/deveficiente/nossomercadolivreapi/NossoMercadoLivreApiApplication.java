@@ -2,6 +2,9 @@ package br.com.deveficiente.nossomercadolivreapi;
 
 import br.com.deveficiente.nossomercadolivreapi.categoria.Categoria;
 import br.com.deveficiente.nossomercadolivreapi.categoria.CategoriaRepository;
+import br.com.deveficiente.nossomercadolivreapi.usuario.BCryptPassword;
+import br.com.deveficiente.nossomercadolivreapi.usuario.Usuario;
+import br.com.deveficiente.nossomercadolivreapi.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +22,9 @@ public class NossoMercadoLivreApiApplication implements CommandLineRunner {
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(NossoMercadoLivreApiApplication.class, args);
 	}
@@ -26,9 +32,16 @@ public class NossoMercadoLivreApiApplication implements CommandLineRunner {
 	@Override
 	@Transactional
 	public void run(String... args) throws Exception {
+		carregaUsuarios();
 		carregaCategorias();
 	}
 
+	private void carregaUsuarios() {
+		usuarioRepository.save(new Usuario("usuario@email.com.br",new BCryptPassword("123456")));
+		usuarioRepository.save(new Usuario("usuariovendedor@email.com.br",new BCryptPassword("123456")));
+		usuarioRepository.save(new Usuario("usuariodosistema@email.com.br",new BCryptPassword("123456")));
+		usuarioRepository.save(new Usuario("usuariosetordecompras@email.com.br",new BCryptPassword("123456")));
+	}
 
 	private void carregaCategorias() {
 		Categoria tecnologia = new Categoria("Tecnologia", Optional.empty());
