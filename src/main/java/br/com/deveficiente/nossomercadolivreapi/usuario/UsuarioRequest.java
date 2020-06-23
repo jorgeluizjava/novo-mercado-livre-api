@@ -33,6 +33,21 @@ public class UsuarioRequest {
         this.senha = senha;
     }
 
+    /**
+     * Frameworks only
+     */
+    @Deprecated
+    public UsuarioRequest() {
+    }
+
+    public UsuarioRequest(
+            @NotEmpty(message = "Login não informado.")
+            @Email String login,
+            @Size(min = 6, message = "A senha deve conter no mínimo 6 caracteres") String senha) {
+        this.login = login;
+        this.senha = senha;
+    }
+
     @Override
     public String toString() {
         return "UsuarioRequest{" +
